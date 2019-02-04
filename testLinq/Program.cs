@@ -12,7 +12,6 @@ namespace testLinq
 		static void Main(string[] args)
 		{
 			var db = new DataClasses1DataContext(@"");
-			//var b = db.GetNextSequenceValue();
 			var testTableRecord1 = new testTable()
 			{
 				a = 1,
