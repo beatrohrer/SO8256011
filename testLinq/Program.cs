@@ -1,35 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data.Linq.Mapping;
 
-namespace testLinq
+namespace test
 {
 	static class Program
 	{
 		static void Main(string[] args)
 		{
-			var db = new DataClasses1DataContext(@"");
-			var testTableRecord1 = new testTable()
-			{
-				a = 1,
-			};
-
-			var testTableRecord2 = new testTable()
-			{
-				a = 2,
-			};
+			var db = new DataClasses1DataContext(@"Data Source=");
+			var testTableRecord1 = new testTable();
+			var testTableRecord2 = new testTable();
 
 			db.Connection.Open();
-			db.testTables.InsertOnSubmit(testTableRecord1);
+			db.GetTable<testTable>().InsertOnSubmit(testTableRecord1);
 			db.SubmitChanges();
-			
-			db.testTables.InsertOnSubmit(testTableRecord2);
+			db.GetTable<testTable>().InsertOnSubmit(testTableRecord2);
 			db.SubmitChanges();
-			Console.WriteLine($"id1: {testTableRecord1.id}");
-			Console.WriteLine($"id2: {testTableRecord2.id}");
 		}
+	}
+
+	[Database(Name = "TestDB")]
+	public class DataClasses1DataContext : System.Data.Linq.DataContext
+	{
+
+		public DataClasses1DataContext(string fileOrServerOrConnection) : base(fileOrServerOrConnection) { }
+
+		void InserttestTable(testTable instance)
+		{
+			using(var cmd = Connection.CreateCommand())
+			{
+				cmd.CommandText = "SELECT NEXT VALUE FOR [dbo].[seq_PK_testTable] as NextId";
+				cmd.Transaction = Transaction;
+				instance.id = (int)cmd.ExecuteScalar();
+
+				ExecuteDynamicInsert(instance);
+			}
+		}
+	}
+
+	[Table(Name = "dbo.testTable")]
+	public class testTable
+	{
+		[Column(DbType = "Int NOT NULL", IsPrimaryKey = true)]
+		public int id;
 	}
 }
