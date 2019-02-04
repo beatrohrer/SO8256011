@@ -9,7 +9,6 @@ namespace test
 			var db = new DataClasses1DataContext(@"Data Source=");
 			var testTableRecord1 = new testTable();
 			var testTableRecord2 = new testTable();
-
 			db.Connection.Open();
 			db.GetTable<testTable>().InsertOnSubmit(testTableRecord1);
 			db.SubmitChanges();
@@ -21,7 +20,6 @@ namespace test
 	[Database(Name = "TestDB")]
 	public class DataClasses1DataContext : System.Data.Linq.DataContext
 	{
-
 		public DataClasses1DataContext(string fileOrServerOrConnection) : base(fileOrServerOrConnection) { }
 
 		void InserttestTable(testTable instance)
@@ -31,7 +29,6 @@ namespace test
 				cmd.CommandText = "SELECT NEXT VALUE FOR [dbo].[seq_PK_testTable] as NextId";
 				cmd.Transaction = Transaction;
 				instance.id = (int)cmd.ExecuteScalar();
-
 				ExecuteDynamicInsert(instance);
 			}
 		}
