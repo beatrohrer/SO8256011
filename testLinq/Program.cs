@@ -9,7 +9,6 @@ namespace test
 			var db = new DataClasses1DataContext(@"Data Source=");
 			var testTableRecord1 = new testTable();
 			var testTableRecord2 = new testTable();
-			db.Connection.Open();
 			db.GetTable<testTable>().InsertOnSubmit(testTableRecord1);
 			db.SubmitChanges();
 			db.GetTable<testTable>().InsertOnSubmit(testTableRecord2);
